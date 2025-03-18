@@ -41,15 +41,13 @@
 				alert('Could not access the microphone. Please check your permissions.');
 			}
 		}*/
-
       window.addEventListener("load", function () {
-        //accessAudio();
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker.register("ServiceWorker.js");
         }
       });
-	  
-	  	let unityInstance;
+
+	  let unityInstance;
 
 		window.onbeforeunload = function(e) {
 			console.log("Calling OnClose from Browser!");
@@ -58,6 +56,26 @@
 			e.returnValue = dialogText;
 			return dialogText;
 		};
+		
+      history.replaceState({ preventForwardNavigation: true }, document.title, window.location.href);
+      history.pushState({ preventForwardNavigation: false }, document.title, window.location.href);
+
+      window.onpopstate = function(event) {
+        if (event.state && event.state.preventForwardNavigation) {
+          var hostname = window.location.hostname;
+			if (hostname.includes("dev.openknowledge.hk")) {
+			  var newUrl = "https://dev.openknowledge.hk/RainbowOne/webapp/OKAGames/SelectGames/";
+			  console.log("Redirecting to:", newUrl);
+			  window.location.replace(newUrl);
+			} else if (hostname.includes("www.rainbowone.app")) {
+			  var productionUrl = "https://www.starwishparty.com/";
+			  console.log("Redirecting to:", productionUrl);
+			  window.location.replace(productionUrl);
+			} else {
+			  console.log("No specific redirection for hostname:", hostname);
+			}
+        }
+      };
 
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
@@ -154,6 +172,7 @@
 		const loadingTextElement = document.getElementById("loadingText");
 		loadingTextElement.textContent = newText;
 	  }
+	  
     </script>
   </body>
 </html>
